@@ -20,8 +20,7 @@ var titleName = process.argv;
 var title = "";
 
 function startLiri(){
-// console.log(liriCommand);
-// console.log(titleName);
+
 	clear();
 	console.log(
   		chalk.cyan.bold(
@@ -50,10 +49,12 @@ switch (liriCommand) {
 
 function searchSong(){
 	
-	if(titleName[3] == null){
+	if(titleName[3] === null){
 
 		Spotify.search({type: 'track', query: 'The Sign'}, function(err, data){
-			
+			if(err) {
+				return console.log('Error occured: ' + err);
+			}
 
 			console.log(chalk.cyan("Artist: ") + data.tracks.items[8].album.artists[0].name);
  			console.log(chalk.cyan("Song: ") + data.tracks.items[8].name);
@@ -72,6 +73,10 @@ function searchSong(){
 	 
 
 		Spotify.search({type: 'track', query:"'" + title + "'" }, function(err, data){
+			if(err) {
+				return console.log('Error occured: ' + err);
+			}
+
 			var albumArtist = data.tracks.items[0].album.artists[0].name;
 			var songName = data.tracks.items[0].name;
 			var preview = data.tracks.items[0].preview_url;
@@ -108,8 +113,8 @@ Twitter.get('statuses/user_timeline', params, function(err, tweets, response){
 			var dateTweet = tweets[i].created_at;
 			var textTweet = tweets[i].text;
 			console.log(chalk.cyan("Date of tweet:") + dateTweet);
-			console.log(chalk.cyan("Tweet content:") + textTweet);
-			console.log('\n');
+			console.log(chalk.cyan("Tweet:") + textTweet);
+			console.log('------------------------------------------------------------------------------');
 			whole = whole + '\n' + dateTweet + '\n' + textTweet;
 		}
 		fs.appendFile('log.txt', whole, function(err){
@@ -121,7 +126,7 @@ Twitter.get('statuses/user_timeline', params, function(err, tweets, response){
 }
 
 function searchMovie(){
-// var title = "remember+the+titans";
+
 	if(titleName[3] == null){
 		title = 'Mr.+Nobody';
 	} else {
@@ -136,14 +141,31 @@ request("http://www.omdbapi.com/?t="+"'"+title+"'"+"&y=&plot=short&apikey=trilog
   if (!error && response.statusCode === 200) {
   	
     var movieTitle = JSON.parse(body).Title;
+    var movieYear = JSON.parse(body).Year;
+    var movieRating = JSON.parse(body).imdbRating;
+    var movieT = JSON.parse(body).Ratings[1].Source;
+    var movieV = JSON.parse(body).Ratings[1].Value;
+    var movieCountry = JSON.parse(body).Country;
+    var movieLang = JSON.parse(body).Language;
+    var movieActors = JSON.parse(body).Actors;
+    var moviePlot = JSON.parse(body).Plot;
+
     console.log(chalk.cyan("Title: ") + movieTitle);
-    console.log(chalk.cyan("Year: ") + JSON.parse(body).Year);
-    console.log(chalk.cyan("IMDB rating: ") + JSON.parse(body).imdbRating);
-    console.log(chalk.cyan(JSON.parse(body).Ratings[1].Source +" : ") +JSON.parse(body).Ratings[1].Value);
-    console.log(chalk.cyan("Country: ") + JSON.parse(body).Country);
-    console.log(chalk.cyan("Language: ") + JSON.parse(body).Language);
-    console.log(chalk.cyan("Actors: ") + JSON.parse(body).Actors);
-    console.log(chalk.cyan("Plot: ") + JSON.parse(body).Plot);
+    console.log(chalk.cyan("Year: ") + movieYear);
+    console.log(chalk.cyan("IMDB rating: ") + movieRating);
+    console.log(chalk.cyan(movieT +" : ") + movieV);
+    console.log(chalk.cyan("Country: ") + movieCountry);
+    console.log(chalk.cyan("Language: ") + movieLang);
+    console.log(chalk.cyan("Actors: ") + movieActors);
+    console.log(chalk.cyan("Plot: ") + moviePlot);
+
+    var allInfo = '\n' + movieTitle + '\n' + movieYear + '\n'+ movieRating + '\n'+ movieT + movieV 
+    	+ '\n'+ movieCountry+ '\n'+ movieLang + '\n'+ movieActors + '\n'+ moviePlot;
+    		
+    fs.appendFile('log.txt', allInfo, function(err){
+			if (err) throw err;
+			console.log("Saved in log file.");
+		});
   }
 });
 }
@@ -151,7 +173,7 @@ request("http://www.omdbapi.com/?t="+"'"+title+"'"+"&y=&plot=short&apikey=trilog
 function randomFile(){
 	fs.readFile('random.txt', "utf-8", function(err, data){
 
-		//console.log(data);
+		
 		var dataArr = data.split(",");
 		
 		liriCommand = dataArr[0];

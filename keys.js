@@ -1,4 +1,4 @@
-//console.log('this is loaded');
+
 
 var twitterKeys = {
   consumer_key: '2t9eIr26uRemy2U20Eq8iWZwP',
@@ -19,15 +19,6 @@ module.exports = {
 
 
 
-
-//	The Sign
-// 0hrBpAOgrt8RXigk83LLNE
-// Ace of Base
-// https://p.scdn.co/mp3-preview/4c463359f67dd3546db7294d236dd0ae991882ff?cid=a5beacc0ea764091bf7dc3963f42f3be
-//console.log(data.tracks.items[8].album.artists[0].name);
-// console.log(data.tracks.items[8].album.name);
-// console.log(data.tracks.items[8].preview_url);
-// console.log(data.tracks.items[8].name);
 
 
 
